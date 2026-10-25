@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Cloud Node — Book Flights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --red: #5f7a61;
+  --red-d: #46604a;
+  --gold: #c9b37e;
+  --gold-l: #e6d9ab;
+  --navy: #1f2d24;
+  --navy-2: #2f4335;
+  --cream: #f3f6ef;
+  --text: #1a1a1a;
+  --muted: #5d6b60;
+  --white: #ffffff;
+  --border: rgba(31,45,36,0.08);
+  --green: #1a7a4c;
+  --amber: #b8860b;
+  --danger: #c0392b;
+  --r: 14px;
+  --font: "Inter", system-ui, sans-serif;
+  --serif: "Playfair Display", Georgia, serif;
+  --glass: rgba(31,45,36,0.78);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:linear-gradient(180deg,#f3f6ef 0%,#e8efe3 100%);color:var(--text);min-height:100vh}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.85rem 2rem;
+  background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 2px 20px rgba(31,45,36,0.25);
+}
+.brand{display:flex;align-items:center;gap:0.75rem}
+.logo{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;box-shadow:0 0 0 2px rgba(255,255,255,0.18),0 4px 20px rgba(95,122,97,0.6);
+}
+.brand-text h1{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:#fff;letter-spacing:0.05em;line-height:1.2}
+.brand-text small{font-size:0.65rem;color:var(--gold-l);letter-spacing:0.32em;text-transform:uppercase}
+.top-right{display:flex;align-items:center;gap:1.1rem}
+.live{
+  display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;font-weight:600;
+  color:#7dcea0;background:rgba(125,206,160,0.12);border:1px solid rgba(125,206,160,0.3);
+  padding:0.3rem 0.85rem;border-radius:999px;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:#7dcea0;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* HERO */
+.hero-banner{position:relative;height:430px;overflow:hidden;background:var(--navy)}
+.hero-banner .slides{position:absolute;inset:0}
+.hero-banner .slide{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0;animation:kb 30s linear infinite;animation-play-state:paused;
+}
+body.ready .hero-banner .slide{animation-play-state:running}
+.hero-banner .slide:nth-child(1){animation-delay:0s}
+.hero-banner .slide:nth-child(2){animation-delay:6s}
+.hero-banner .slide:nth-child(3){animation-delay:12s}
+.hero-banner .slide:nth-child(4){animation-delay:18s}
+.hero-banner .slide:nth-child(5){animation-delay:24s}
+@keyframes kb{
+  0%{opacity:0;transform:scale(1.14)} 4%{opacity:1}
+  20%{opacity:1;transform:scale(1.04)} 24%{opacity:0;transform:scale(1.03)} 100%{opacity:0;transform:scale(1.03)}
+}
+.hero-banner::before{content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(100deg,rgba(20,32,24,0.94) 0%,rgba(70,96,74,0.6) 45%,rgba(20,32,24,0.15) 100%)}
+.hero-banner::after{content:"";position:absolute;left:0;right:0;bottom:0;height:140px;z-index:1;
+  background:linear-gradient(to top,rgba(20,32,24,0.7),transparent)}
+.hero-banner .inner{position:relative;z-index:3;height:100%;max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;flex-direction:column;justify-content:center}
+.eyebrow{display:inline-flex;align-items:center;gap:0.8rem;color:var(--gold-l);font-size:0.72rem;letter-spacing:0.34em;text-transform:uppercase;font-weight:600}
+.eyebrow::before{content:"";width:46px;height:1px;background:var(--gold-l)}
+.hero-banner h2{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.9rem);font-weight:500;line-height:1.1;margin:1rem 0 0.9rem;max-width:760px;color:#fff}
+.hero-banner h2 em{font-style:italic;color:var(--gold-l)}
+.hero-banner p{max-width:520px;font-size:1.05rem;line-height:1.6;color:rgba(255,255,255,0.82)}
+.hero-cta{display:flex;gap:0.9rem;margin-top:1.8rem;flex-wrap:wrap}
+.btn-hero{padding:0.85rem 1.8rem;border-radius:999px;font-size:0.9rem;letter-spacing:0.04em;border:none;cursor:pointer;font-family:var(--font);font-weight:600;transition:all .25s}
+.btn-hero.solid{background:linear-gradient(135deg,var(--red),#46604a);color:#fff;box-shadow:0 10px 30px rgba(95,122,97,0.5)}
+.btn-hero.solid:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(95,122,97,0.65)}
+.btn-hero.line{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.btn-hero.line:hover{background:#fff;color:var(--navy)}
+
+/* DESTINATIONS */
+.dest{max-width:1400px;margin:0 auto;padding:3.4rem 2rem 0.6rem}
+.dest-head{display:flex;align-items:flex-end;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.dest-head small{display:block;color:var(--red);font-size:.7rem;letter-spacing:.34em;text-transform:uppercase;font-weight:700;margin-bottom:.4rem}
+.dest-head h2{font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--navy)}
+.dest-head p{color:var(--muted);font-size:.9rem;max-width:340px}
+.dest-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem}
+.dest-card{position:relative;height:300px;border-radius:22px;overflow:hidden;background:var(--navy);box-shadow:0 14px 40px rgba(31,45,36,0.18);transition:transform .4s,box-shadow .4s;cursor:pointer}
+.dest-card:hover{transform:translateY(-8px);box-shadow:0 24px 54px rgba(31,45,36,0.3)}
+.dest-card svg{width:100%;height:100%;display:block;transition:transform 1s ease}
+.dest-card:hover svg{transform:scale(1.09)}
+.dest-card .cap{position:absolute;left:0;right:0;bottom:0;padding:2.4rem 1.3rem 1.2rem;color:#fff;background:linear-gradient(to top,rgba(14,22,17,0.9),transparent)}
+.dest-card .cap b{display:block;font-family:var(--serif);font-size:1.45rem;font-weight:600}
+.dest-card .cap small{color:var(--gold-l);letter-spacing:.24em;text-transform:uppercase;font-size:.64rem}
+
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 280px);max-width:1400px;margin:0 auto}
+.sidebar{padding:1.5rem 1rem;background:rgba(255,255,255,0.85);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-right:1px solid var(--border)}
+.nav-sec{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);padding:0 0.75rem;margin:1.15rem 0 0.4rem}
+.nav-sec:first-child{margin-top:0}
+.nav{
+  display:flex;align-items:center;gap:0.65rem;width:100%;padding:0.7rem 0.85rem;
+  border:none;background:transparent;color:var(--muted);font-family:var(--font);
+  font-size:0.9rem;font-weight:500;border-radius:10px;cursor:pointer;transition:all 0.2s;text-align:left;
+}
+.nav:hover{color:var(--navy);background:rgba(31,45,36,0.04)}
+.nav.on{color:var(--red);background:linear-gradient(90deg,rgba(95,122,97,0.14),rgba(95,122,97,0.02));border-left:3px solid var(--red);font-weight:600}
+.nav .ico{font-size:1.05rem;width:1.35rem;text-align:center}
+
+.main{padding:1.5rem 2rem 2.5rem;background:transparent}
+.page{display:none;animation:fade 0.35s ease}
+.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.stat{
+  position:relative;overflow:hidden;background:linear-gradient(180deg,#fff,#f8faf5);
+  border:1px solid var(--border);border-radius:18px;padding:1.15rem 1.25rem;
+  box-shadow:0 8px 28px rgba(31,45,36,0.07);
+}
+.stat::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red),var(--gold))}
+.stat .l{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:600}
+.stat .n{font-family:var(--serif);font-size:2rem;font-weight:700;margin-top:0.25rem;color:var(--navy);font-variant-numeric:tabular-nums}
+
+/* SECTION HEAD */
+.sec-head{margin-bottom:1.25rem}
+.sec-head h2{font-family:var(--serif);font-size:1.85rem;font-weight:600;color:var(--navy)}
+.sec-head h2::after{content:"";display:block;width:48px;height:3px;margin-top:.55rem;border-radius:2px;background:linear-gradient(90deg,var(--red),var(--gold))}
+.sec-head p{color:var(--muted);font-size:0.9rem;margin-top:0.2rem}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:0.6rem;margin-bottom:1.25rem}
+
+/* FLIGHT CARDS */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.15rem}
+.fc{
+  background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;
+  box-shadow:0 8px 30px rgba(31,45,36,0.08);transition:all 0.25s;
+}
+.fc:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgba(31,45,36,0.2);border-color:rgba(95,122,97,0.2)}
+.fc-img{
+  height:100px;background:center/cover no-repeat;position:relative;
+  background-image:linear-gradient(to top,rgba(31,45,36,0.75),transparent 60%),url('https://images.unsplash.com/photo-1529074963764-98f45c47344b?w=600&q=80');
+}
+.fc-img .fn{position:absolute;bottom:0.7rem;left:1rem;font-weight:700;font-size:1.15rem;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,0.4)}
+.fc-body{padding:1rem 1.15rem}
+.fc-air{color:var(--muted);font-size:0.82rem;margin-bottom:0.55rem}
+.route{display:flex;align-items:center;gap:0.5rem;font-weight:600;font-size:0.95rem;color:var(--navy);margin-bottom:0.7rem}
+.route .arrow{color:var(--red);font-size:0.85rem}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.85rem}
+.meta .k{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted)}
+.meta .v{font-weight:600;font-size:0.9rem;margin-top:0.1rem}
+.meta .v.ok{color:var(--green)}.meta .v.low{color:var(--danger)}.meta .v.warn{color:var(--amber)}
+.fc-foot{padding:0 1.15rem 1.1rem}
+
+/* TABLE */
+.tcard{background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(31,45,36,0.07)}
+table{width:100%;border-collapse:collapse;font-size:0.88rem}
+th{text-align:left;padding:0.9rem 1.15rem;background:linear-gradient(90deg,var(--navy),var(--navy-2));color:rgba(255,255,255,0.85);font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em}
+td{padding:0.85rem 1.15rem;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(95,122,97,0.03)}
+
+.badge{display:inline-block;padding:0.2rem 0.55rem;border-radius:999px;font-size:0.72rem;font-weight:600}
+.bg{background:rgba(26,122,76,0.12);color:var(--green)}
+.ba{background:rgba(184,134,11,0.12);color:var(--amber)}
+.br{background:rgba(192,57,43,0.12);color:var(--danger)}
+.bb{background:rgba(95,122,97,0.1);color:var(--red)}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;
+  padding:0.55rem 1.2rem;border:none;border-radius:8px;font-family:var(--font);
+  font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;
+}
+.btn-p{background:linear-gradient(135deg,var(--red),#46604a);color:#fff;box-shadow:0 6px 18px rgba(95,122,97,0.3)}
+.btn-p:hover{background:linear-gradient(135deg,#4e6a52,#3b523f);transform:translateY(-1px)}
+.btn-g{background:transparent;border:1.5px solid var(--border);color:var(--navy)}
+.btn-g:hover{border-color:var(--red);color:var(--red)}
+.btn-d{background:transparent;border:1.5px solid rgba(192,57,43,0.4);color:var(--danger);padding:0.35rem 0.75rem;font-size:0.78rem}
+.btn-d:hover{background:var(--danger);color:#fff}
+.btn-s{padding:0.42rem 0.9rem;font-size:0.8rem}
+.btn-block{width:100%}
+.btn:disabled{opacity:0.45;cursor:not-allowed;transform:none!important}
+
+/* FORM */
+.fcard{background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.5rem;max-width:640px;box-shadow:0 8px 30px rgba(31,45,36,0.07)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.15rem}
+.fgrid .full{grid-column:1/-1}
+label{display:block;font-size:0.72rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;letter-spacing:0.03em}
+input,select{
+  width:100%;padding:0.7rem 0.9rem;background:#f8faf5;border:1.5px solid var(--border);
+  border-radius:8px;color:var(--text);font-family:var(--font);font-size:0.9rem;transition:border-color 0.2s,box-shadow 0.2s;
+}
+input:focus,select:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(95,122,97,0.1);background:#fff}
+.hint{font-size:0.75rem;color:var(--muted);margin-top:0.3rem}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;padding:0.85rem 1.3rem;border-radius:10px;font-size:0.9rem;
+  font-weight:600;z-index:400;animation:slide 0.3s ease;max-width:360px;box-shadow:0 8px 28px rgba(0,0,0,0.15)}
+.toast.ok{background:#fff;border-left:4px solid var(--green);color:var(--green)}
+.toast.err{background:#fff;border-left:4px solid var(--danger);color:var(--danger)}
+@keyframes slide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.loading,.empty,.error{padding:2.8rem 1rem;text-align:center;color:var(--muted)}
+.error{color:var(--danger)}
+.spin{width:32px;height:32px;border:3px solid rgba(31,45,36,0.08);border-top-color:var(--red);
+  border-radius:50%;animation:sp 0.7s linear infinite;margin:0 auto 0.75rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+.medal{font-size:1.3rem}
+
+/* FOOTER */
+.footer{
+  background:linear-gradient(90deg,var(--navy),var(--navy-2));color:rgba(255,255,255,0.7);text-align:center;
+  padding:1.25rem 2rem;font-size:0.82rem;position:relative;
+}
+.footer::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red),var(--gold),var(--red))}
+.footer strong{color:var(--gold-l);font-family:var(--serif);font-size:1rem;font-weight:600}
+
+/* REVEAL */
+.rv,.sidebar,.stat,.fc{opacity:0}
+body.ready .rv{animation:rise .9s cubic-bezier(.2,.7,.2,1) var(--d,0s) forwards}
+body.ready .sidebar{animation:rise .8s ease .5s forwards}
+body.ready .stat{animation:rise .8s ease forwards}
+body.ready .stat:nth-child(1){animation-delay:.6s}body.ready .stat:nth-child(2){animation-delay:.7s}
+body.ready .stat:nth-child(3){animation-delay:.8s}body.ready .stat:nth-child(4){animation-delay:.9s}
+body.ready .fc{animation:rise .7s ease forwards}
+body.ready .fc:nth-child(2){animation-delay:.08s}body.ready .fc:nth-child(3){animation-delay:.16s}
+body.ready .fc:nth-child(4){animation-delay:.24s}body.ready .fc:nth-child(5){animation-delay:.32s}
+body.ready .fc:nth-child(n+6){animation-delay:.4s}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* INTRO */
+body.intro-lock{overflow:hidden}
+#intro{
+  --sg1:#8fa383;--sg2:#5f7560;--sg3:#2b3a2f;--cream:#f4efdf;--mint:#cfe2c6;
+  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;text-align:center;
+  color:var(--cream);cursor:pointer;overflow:hidden;
+}
+#intro .cv{position:absolute;top:0;bottom:0;width:50.3%;
+  background:radial-gradient(90% 75% at 50% 35%,var(--sg1),var(--sg2) 55%,var(--sg3));
+  transition:transform 1.4s cubic-bezier(.7,0,.2,1)}
+#intro .cv::after{content:"";position:absolute;inset:0;opacity:.12;
+  background:repeating-linear-gradient(100deg,transparent 0 46px,rgba(255,255,255,.7) 47px 48px)}
+#intro .cl{left:0}#intro .cr{right:0}
+#intro .cl::before,#intro .cr::before{content:"";position:absolute;top:8%;bottom:8%;width:1px;background:linear-gradient(transparent,var(--mint),transparent);opacity:.55}
+#intro .cl::before{right:14px}#intro .cr::before{left:14px}
+#intro.open .cl{transform:translateX(-101%)}#intro.open .cr{transform:translateX(101%)}
+#intro .ic,#intro .tap{position:relative;z-index:2;padding:0 22px}
+#intro.open .ic,#intro.open .tap,#intro.open .stars{opacity:0;transition:opacity .45s}
+#intro.gone{display:none}
+#intro .stars{position:absolute;inset:0;z-index:1;transition:opacity .45s}
+#intro .stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--cream);opacity:0;animation:tw 4.5s infinite}
+@keyframes tw{0%,100%{opacity:0;transform:translateY(0)}50%{opacity:.7;transform:translateY(-8px)}}
+.crest{width:96px;height:96px;display:block;margin:0 auto}
+.crest circle{fill:none;stroke:var(--mint);stroke-width:1.2;stroke-dasharray:1;stroke-dashoffset:1;animation:dr 1.8s .2s ease-out forwards}
+.crest circle+circle{stroke:var(--cream);opacity:.7;animation-delay:.5s}
+.crest .pl{fill:var(--cream);fill-opacity:0;stroke:var(--cream);stroke-width:1;stroke-dasharray:1;stroke-dashoffset:1;animation:dr 1.6s .6s ease-out forwards,fl 1s 1.9s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}@keyframes fl{to{fill-opacity:1}}
+#intro h1{
+  font-family:var(--serif);font-weight:700;text-transform:uppercase;margin:14px 0 0;
+  font-size:clamp(34px,8.2vw,78px);padding-left:.14em;
+  background:linear-gradient(90deg,var(--cream),var(--mint),#fff,var(--mint),var(--cream));background-size:250%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  animation:ls 2.4s .9s cubic-bezier(.2,.7,.2,1) both,sh 5s 1s linear infinite;
+  filter:drop-shadow(0 6px 24px rgba(20,35,24,.55));
+}
+@keyframes ls{from{letter-spacing:.85em;opacity:0}to{letter-spacing:.2em;opacity:1}}
+@keyframes sh{to{background-position:-250% 0}}
+#intro .route{width:min(560px,86vw);margin:2px auto 0;display:block;overflow:visible}
+#intro .route .tr{fill:none;stroke:var(--mint);stroke-width:1.6;stroke-dasharray:6 8;opacity:.4}
+#intro .route .dw{fill:none;stroke:var(--cream);stroke-width:2;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:dr 3.2s 1.3s cubic-bezier(.5,0,.3,1) forwards}
+#intro .route circle{fill:var(--cream)}
+#intro .tag{margin:2px 0 0;color:var(--mint);letter-spacing:.42em;font-size:.8rem;font-weight:600;animation:up 1s 2.3s both}
+#intro blockquote{max-width:480px;margin:24px auto 0;font:italic 600 1.3rem/1.45 var(--serif);color:#eaf0e1;animation:up 1.2s 2.9s both}
+#intro blockquote cite{display:block;font:500 .75rem var(--font);letter-spacing:.2em;text-transform:uppercase;color:var(--mint);margin-top:8px}
+#intro .tap{position:absolute;bottom:28px;left:0;right:0;font-size:.78rem;letter-spacing:.25em;text-transform:uppercase;color:var(--mint);animation:up 1s 3.6s both}
+#intro .tap b{display:block;width:120px;height:2px;margin:10px auto 0;background:rgba(244,239,223,.2);border-radius:2px;overflow:hidden}
+#intro .tap b::after{content:"";display:block;height:100%;background:var(--cream);transform-origin:left;animation:pg 7s linear forwards}
+@keyframes pg{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes up{from{opacity:0;transform:translateY(16px)}}
+
+/* ========== BOOKING FLOW (API-backed) ========== */
+.bk{font:400 16px/1.55 var(--font);color:var(--text)}
+.bk button,.bk input,.bk select{font:inherit;color:inherit}.bk button{cursor:pointer}
+.bk :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.bk h2,.bk h3{font-family:var(--serif);margin:0;font-weight:600}
+@keyframes bkup{from{opacity:0;transform:translateY(16px)}}
+@keyframes bkdr{to{stroke-dashoffset:0}}
+@keyframes bksh{to{background-position:-200%}}
+
+.bk .bhero{position:relative;overflow:hidden;color:#fff;text-align:center;padding:44px 24px 120px;border-radius:22px;
+  background:radial-gradient(120% 90% at 50% 0,#5f7a61,#1f2d24 55%,#141f18)}
+.bk .bhero h1{font-size:clamp(34px,5vw,58px);line-height:1.08;font-weight:600;animation:bkup 1s both}
+.bk .bhero p{max-width:520px;margin:14px auto 0;color:#dbe6d8;font-size:17px;animation:bkup 1s .2s both}
+
+.bk .search{position:relative;z-index:2;margin:-84px auto 0;width:min(1040px,94%);background:#fff;border-radius:22px;padding:24px;
+  border-top:3px solid var(--gold);box-shadow:0 30px 70px -30px rgba(31,45,36,.45);
+  display:grid;grid-template-columns:1fr 46px 1fr 1fr;gap:14px}
+.bk .fd{display:flex;flex-direction:column;gap:5px;min-width:0}
+.bk .fd label{font-size:13px;color:var(--muted);font-weight:400;letter-spacing:0}
+.bk .fd select,.bk .fd input{height:48px;padding:0 12px;border:1px solid #dde5d8;border-radius:12px;background:#fff;width:100%}
+.bk .fd select:focus,.bk .fd input:focus{border-color:var(--red);outline:0;box-shadow:0 0 0 4px rgba(95,122,97,.18)}
+.bk .swap{align-self:end;height:48px;width:46px;border-radius:50%;border:1px solid #dde5d8;background:#fff;color:var(--red);font-size:18px;transition:transform .5s}
+.bk .swap:hover{transform:rotate(180deg)}
+.bk .r2{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end}
+.bk .btn-find{height:48px;padding:0 26px;border:0;border-radius:99px;background:linear-gradient(135deg,#5f7a61,#46604a);color:#fff;font-weight:600;transition:transform .2s,box-shadow .2s}
+.bk .btn-find:hover{transform:translateY(-2px);box-shadow:0 12px 22px -12px #5f7a61}
+.bk .err{grid-column:1/-1;color:var(--danger);font-size:14px}
+
+.bk .bar{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-bottom:20px}
+.bk .bar h2{font-size:28px;color:var(--navy)}
+.bk .sub{color:var(--muted);font-size:0.9rem}
+.bk .cd{display:grid;grid-template-columns:140px 1fr 160px;gap:18px;align-items:center;background:#fff;border:1px solid #dde5d8;border-radius:18px;padding:18px 22px;margin-bottom:12px;transition:border-color .3s,box-shadow .3s;animation:bkup .6s both}
+.bk .cd:hover{border-color:var(--gold);box-shadow:0 18px 36px -26px var(--navy)}
+.bk .tm{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.bk .tm b{font:600 24px/1 var(--serif)}
+.bk .tm small{display:block;color:var(--muted);font-size:13px}
+.bk .tm .m{text-align:center;font-size:13px;color:var(--muted)}
+.bk .tm .m hr{border:0;height:2px;margin:6px 0;background:linear-gradient(90deg,#dde5d8,var(--gold),#dde5d8)}
+.bk .tg{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;background:#E1F1EA;color:var(--green)}
+.bk .by{text-align:right}
+.bk .by b{font:600 24px/1 var(--serif);color:var(--navy)}
+.bk .by small{display:block;color:var(--muted);margin-bottom:8px}
+.bk .em{background:#fff;border:1px dashed var(--gold);border-radius:18px;padding:40px;text-align:center;color:var(--muted)}
+.bk .sk{height:104px;border-radius:18px;margin-bottom:12px;background:linear-gradient(90deg,#dde5d8 25%,#fff 50%,#dde5d8 75%);background-size:200%;animation:bksh 1.4s infinite}
+
+.bk .stp{display:flex;justify-content:space-between;position:relative;max-width:520px;margin:0 0 26px}
+.bk .stp::before{content:"";position:absolute;left:14px;right:14px;top:14px;height:2px;background:#dde5d8}
+.bk .stp div{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:13px;color:var(--muted)}
+.bk .stp b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#fff;border:2px solid #dde5d8;transition:.4s}
+.bk .stp .on b{background:var(--navy);border-color:var(--gold);color:var(--gold)}
+.bk .stp .on{color:var(--text)}
+
+.bk .fw{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
+.bk .pn{background:#fff;border:1px solid #dde5d8;border-radius:18px;padding:24px;animation:bkup .5s both}
+.bk .pn h2{font-size:26px;color:var(--navy);margin-bottom:6px}
+.bk .pn .hint{color:var(--muted);margin:0 0 18px;font-size:0.9rem}
+.bk .sm{background:var(--navy);color:#dbe6d8;border-radius:18px;padding:20px;position:sticky;top:90px}
+.bk .sm h3{color:var(--gold-l);font-size:20px;margin-bottom:8px;font-family:var(--serif)}
+.bk .sm .sg{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.14);font-size:14px}
+.bk .sm .tot{display:flex;justify-content:space-between;margin-top:12px;font:600 24px var(--serif);color:#fff}
+.bk .in{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bk .full{grid-column:1/-1}
+.bk .ac{display:flex;justify-content:space-between;margin-top:22px;gap:10px;flex-wrap:wrap}
+.bk .alert{background:#fbeae7;color:var(--danger);border-radius:12px;padding:10px 14px;margin-top:14px;font-size:14px}
+
+.bk .done{text-align:center;margin-bottom:22px}
+.bk .tick{width:84px}
+.bk .tick circle,.bk .tick path{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-dasharray:260;stroke-dashoffset:260;animation:bkdr 1s forwards}
+.bk .tick path{stroke-dasharray:60;stroke-dashoffset:60;animation:bkdr .6s .8s forwards}
+.bk .ps{display:grid;grid-template-columns:1fr 200px;max-width:820px;margin:0 auto 16px;background:#fff;border-radius:20px;overflow:hidden;border:1px solid #dde5d8;box-shadow:0 24px 46px -34px var(--navy);animation:bkup .9s both}
+.bk .ps .l{padding:22px 26px;border-top:6px solid var(--gold)}
+.bk .ps .r{background:var(--navy);color:#fff;padding:20px 14px;border-left:2px dashed var(--gold);display:flex;flex-direction:column;justify-content:center;text-align:center}
+.bk .ps .r b{font:600 28px var(--serif);color:var(--gold-l);letter-spacing:2px}
+.bk .ps .rt2{display:flex;align-items:center;gap:14px;margin:8px 0 12px}
+.bk .ps .rt2 b{font:600 32px var(--serif)}
+.bk .ps .rt2 hr{flex:1;border:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--red))}
+.bk .ps td{padding:4px 0;border-top:1px solid #dde5d8;font-size:14px}
+.bk .ps td+td{text-align:right;color:var(--muted)}
+.bk .ps table{width:100%;border-collapse:collapse}
+.bk .acc{text-align:center;margin-top:20px}
+.bk .acc .btn+.btn{margin-left:8px}
+
+/* Seat map (same theme) */
+.bk .cab{max-width:340px;margin:0 auto 12px;padding:22px 16px 14px;background:#f3f6ef;border:1px solid #dde5d8;border-radius:120px 120px 18px 18px}
+.bk .sr{display:grid;gap:6px;margin-bottom:6px;align-items:center;text-align:center}
+.bk .sr b{font-size:11px;color:var(--muted);font-weight:500}
+.bk .se{height:32px;border-radius:8px 8px 5px 5px;border:1.5px solid var(--gold);background:#fff;font-size:11px;color:var(--muted);cursor:pointer;transition:transform .15s,background .15s}
+.bk .se:hover:not(:disabled){transform:translateY(-2px);border-color:var(--red);color:var(--navy)}
+.bk .se.lg{background:#fbf6e6;color:#8a6a1f}
+.bk .se:disabled{background:#e8efe3;border-color:#dde5d8;color:#c5d0c4;cursor:not-allowed}
+.bk .se.me{background:var(--navy);border-color:var(--navy);color:var(--gold-l)}
+.bk .se.ot{background:#c5d0c4;border-color:#c5d0c4;color:#fff;opacity:.85}
+.bk .lg2{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;font-size:13px;color:var(--muted);margin-top:10px}
+.bk .chip{padding:8px 16px;border-radius:999px;border:1.5px solid #dde5d8;background:#fff;font-size:14px;cursor:pointer;font-family:var(--font);font-weight:500;color:var(--navy)}
+.bk .chip.on{background:var(--navy);border-color:var(--navy);color:var(--gold-l)}
+.bk .ml{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:8px}
+.bk .mc{text-align:left;background:#fff;border:1.5px solid #dde5d8;border-radius:14px;padding:13px 14px;cursor:pointer;font-family:var(--font);transition:.2s;color:var(--navy)}
+.bk .mc:hover{border-color:var(--gold)}
+.bk .mc.on{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,179,126,.28);background:#fbf8f0}
+.bk .mc b{display:block;margin:3px 0;font-size:.95rem}
+.bk .mc small{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.bk .mc span{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
+.bk .ch{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.bk .alert{background:#fbe8ec;color:var(--danger);border-radius:12px;padding:10px 14px;margin:12px 0;font-size:14px}
+.bk .ac{display:flex;justify-content:space-between;margin-top:22px;gap:10px;flex-wrap:wrap}
+.bk .in{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bk .in .full{grid-column:1/-1}
+.bk .tick{width:84px;margin:0 auto}
+.bk .tick circle,.bk .tick path{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-dasharray:260;stroke-dashoffset:260;animation:bkdraw 1s forwards}
+.bk .tick path{stroke-dasharray:60;stroke-dashoffset:60;animation:bkdraw .6s .8s forwards}
+@keyframes bkdraw{to{stroke-dashoffset:0}}
+
+.mnav{display:none;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.mnav button{flex:1;min-width:120px;padding:.65rem 1rem;border-radius:999px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font:600 .88rem var(--font);cursor:pointer}
+
+@media(max-width:960px){
+  .shell{grid-template-columns:1fr}.sidebar{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr}
+  .hero-banner{height:360px}.dest-grid{grid-template-columns:repeat(2,1fr)}.dest{padding:2.2rem 1rem 0}
+  .mnav{display:flex}
+  .bk .fw{grid-template-columns:1fr}.bk .sm{position:static}
+  .bk .search{grid-template-columns:1fr}.bk .swap{width:100%;border-radius:12px}
+  .bk .cd{grid-template-columns:1fr}.bk .by{text-align:left}
+  .bk .ps{grid-template-columns:1fr}.bk .ps .r{border-left:0;border-top:2px dashed var(--gold)}
+}
+@media(max-width:520px){.dest-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){
+  #intro *,.bk *,.bk *::before,.bk *::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body class="intro-lock">
+
+<!-- INTRO -->
+<div id="intro" role="dialog" aria-label="Welcome to Cloud Node">
+  <i class="cv cl"></i><i class="cv cr"></i><div class="stars" id="stars" aria-hidden="true"></div>
+  <div class="ic">
+    <svg class="crest" viewBox="0 0 96 96" aria-hidden="true">
+      <circle cx="48" cy="48" r="44" pathLength="1"/><circle cx="48" cy="48" r="37" pathLength="1"/>
+      <path class="pl" pathLength="1" transform="translate(23 23) scale(.78)" d="M62 32 38 24 26 4h-6l6 20-14 3-6-7H2l3 12-3 12h4l6-7 14 3-6 20h6l12-20 24-8c2-1 2-5 0-5z"/>
+    </svg>
+    <h1>Cloud Node</h1>
+    <svg class="route" viewBox="0 0 560 120" aria-hidden="true">
+      <path class="tr" d="M30 100Q280-70 530 100"/>
+      <path class="dw" pathLength="1" d="M30 100Q280-70 530 100"/>
+      <circle cx="30" cy="100" r="4"/><circle cx="530" cy="100" r="4"/>
+      <g><path fill="#f4efdf" transform="scale(.46) translate(-32 -32)" d="M62 32 38 24 26 4h-6l6 20-14 3-6-7H2l3 12-3 12h4l6-7 14 3-6 20h6l12-20 24-8c2-1 2-5 0-5z"/>
+        <animateMotion dur="3.2s" begin="1.3s" fill="freeze" rotate="auto" calcMode="spline" keyTimes="0;1" keySplines=".5 0 .3 1" path="M30 100Q280-70 530 100"/></g>
+    </svg>
+    <p class="tag">FLY BEYOND LIMITS</p>
+    <blockquote>“To travel is to discover that everyone is wrong about other countries.”<cite>Aldous Huxley</cite></blockquote>
+  </div>
+  <div class="tap">Tap anywhere to enter<b></b></div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">✈</div>
+    <div class="brand-text">
+      <h1>Cloud Node</h1>
+      <small>Fly Beyond Limits</small>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="live"><div class="dot"></div><span id="status">Connecting…</span></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero-banner">
+  <div class="slides">
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1800&q=80')"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1529074963764-98f45c47344b?w=1800&q=80')"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=1800&q=80')"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=1800&q=80')"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1569629743817-70d8db6c323b?w=1800&q=80')"></div>
+  </div>
+  <div class="inner">
+    <span class="eyebrow rv" style="--d:.2s">Official Booking Portal</span>
+    <h2 class="rv" style="--d:.4s">Fly the skies with <em>elegance</em></h2>
+    <p class="rv" style="--d:.6s">Book domestic &amp; international flights with Cloud Node — comfort, care, and on-time journeys.</p>
+    <div class="hero-cta rv" style="--d:.8s">
+      <button class="btn-hero solid" onclick="go('book');document.querySelector('.shell').scrollIntoView({behavior:'smooth'})">Book a Flight</button>
+      <button class="btn-hero line" onclick="go('flights');document.querySelector('.shell').scrollIntoView({behavior:'smooth'})">Explore Flights</button>
+    </div>
+  </div>
+</div>
+
+<!-- DESTINATIONS -->
+<section class="dest">
+  <div class="dest-head rv" style="--d:.9s">
+    <div><small>Curated Journeys</small><h2>Popular Destinations</h2></div>
+    <p>Skylines worth the journey — where Cloud Node takes you next.</p>
+  </div>
+  <div class="dest-grid">
+    <article class="dest-card rv" style="--d:1.0s" onclick="prefillSearch('','Dubai')">
+      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="gD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f2d24"/><stop offset=".55" stop-color="#5f7a61"/><stop offset="1" stop-color="#d9b872"/></linearGradient>
+      <linearGradient id="wD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3c5240"/><stop offset="1" stop-color="#17231b"/></linearGradient></defs>
+      <rect width="400" height="300" fill="url(#gD)"/><circle cx="305" cy="176" r="36" fill="#fde68a" opacity=".92"/>
+      <path fill="#101a14" d="M0 300 L0 228 L28 228 L28 204 L52 204 L52 236 L76 236 L76 188 L98 188 L98 240 L122 240 L122 168 L140 168 L140 128 L152 128 L158 72 L162 28 L166 72 L172 128 L184 128 L184 214 L212 214 L212 176 L238 176 L238 226 L262 226 L262 196 L290 196 L290 236 L316 236 L316 200 L344 200 L344 246 L372 246 L372 214 L400 214 L400 300 Z"/>
+      <rect y="262" width="400" height="38" fill="url(#wD)" opacity=".92"/></svg>
+      <div class="cap"><b>Dubai</b><small>City of Gold</small></div>
+    </article>
+    <article class="dest-card rv" style="--d:1.15s" onclick="prefillSearch('','Mumbai')">
+      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="gM" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a261e"/><stop offset=".55" stop-color="#6f8f6f"/><stop offset="1" stop-color="#e3caa0"/></linearGradient></defs>
+      <rect width="400" height="300" fill="url(#gM)"/><circle cx="96" cy="182" r="30" fill="#fed7aa" opacity=".9"/>
+      <path fill="#101a14" d="M0 300 L0 224 L24 224 L24 196 L50 196 L50 232 L74 232 L74 204 L96 204 L96 238 L124 238 L124 196 L142 196 L142 180 L168 180 L168 156 Q172 146 178 156 L184 156 L184 136 Q200 98 216 136 L216 156 L222 156 Q228 146 232 156 L232 180 L258 180 L258 238 L284 238 L284 206 L308 206 L308 240 L334 240 L334 198 L356 198 L356 234 L382 234 L382 212 L400 212 L400 300 Z"/>
+      <rect y="262" width="400" height="38" fill="#17231b" opacity=".92"/></svg>
+      <div class="cap"><b>Mumbai</b><small>Gateway to India</small></div>
+    </article>
+    <article class="dest-card rv" style="--d:1.3s" onclick="prefillSearch('','Delhi')">
+      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17231b"/><stop offset=".55" stop-color="#4e6a52"/><stop offset="1" stop-color="#e8dcc0"/></linearGradient></defs>
+      <rect width="400" height="300" fill="url(#gL)"/><circle cx="70" cy="150" r="30" fill="#f1ecd8" opacity=".88"/>
+      <path fill="#101a14" fill-rule="evenodd" d="M140 120 H260 V138 H248 V250 H152 V138 H140 Z M176 250 V180 Q200 148 224 180 V250 Z"/>
+      <rect y="250" width="400" height="50" fill="#101a14"/></svg>
+      <div class="cap"><b>Delhi</b><small>The Imperial Capital</small></div>
+    </article>
+    <article class="dest-card rv" style="--d:1.45s" onclick="prefillSearch('','Goa')">
+      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="gJ" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f2d24"/><stop offset=".55" stop-color="#7a9a74"/><stop offset="1" stop-color="#e6d197"/></linearGradient></defs>
+      <rect width="400" height="300" fill="url(#gJ)"/><circle cx="326" cy="120" r="26" fill="#fff7d6" opacity=".9"/>
+      <g fill="#2f4535"><rect x="96" y="190" width="208" height="72"/><rect x="112" y="156" width="176" height="34"/><rect x="130" y="126" width="140" height="30"/><rect x="152" y="98" width="96" height="28"/><rect x="174" y="74" width="52" height="24"/></g>
+      <rect y="262" width="400" height="38" fill="#1a261e"/></svg>
+      <div class="cap"><b>Goa</b><small>Sun &amp; Sea</small></div>
+    </article>
+  </div>
+</section>
+
+<div class="shell">
+<aside class="sidebar">
+  <div class="nav-sec">Book</div>
+  <button class="nav on" data-p="book" onclick="go('book')"><span class="ico">🎫</span> Book Flight</button>
+  <button class="nav" data-p="bookings" onclick="go('bookings')"><span class="ico">📋</span> My Bookings</button>
+  <button class="nav" data-p="passengers" onclick="go('passengers')"><span class="ico">👤</span> Passengers</button>
+  <div class="nav-sec">Explore</div>
+  <button class="nav" data-p="flights" onclick="go('flights')"><span class="ico">✈</span> All Flights</button>
+  <button class="nav" data-p="unbooked" onclick="go('unbooked')"><span class="ico">📭</span> Open Flights</button>
+  <button class="nav" data-p="top" onclick="go('top')"><span class="ico">🏆</span> Popular</button>
+  <button class="nav" data-p="airlines" onclick="go('airlines')"><span class="ico">🏢</span> Airlines</button>
+</aside>
+
+<main class="main">
+  <div class="mnav">
+    <button onclick="go('book')">Book</button>
+    <button onclick="go('bookings')">Bookings</button>
+    <button onclick="go('flights')">Flights</button>
+    <button onclick="go('passengers')">Passengers</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="l">Flights</div><div class="n" id="s-f">–</div></div>
+    <div class="stat"><div class="l">Bookings</div><div class="n" id="s-b">–</div></div>
+    <div class="stat"><div class="l">Open seats</div><div class="n" id="s-u">–</div></div>
+    <div class="stat"><div class="l">Passengers</div><div class="n" id="s-p">–</div></div>
+  </div>
+
+  <!-- BOOK (rich flow, API-backed) -->
+  <div id="pg-book" class="page on">
+    <div class="bk" id="bk-root"></div>
+  </div>
+
+  <!-- BOOKINGS -->
+  <div id="pg-bookings" class="page">
+    <div class="head-row">
+      <div class="sec-head" style="margin:0"><h2>My Bookings</h2><p>View and manage your reservations</p></div>
+      <button class="btn btn-g btn-s" onclick="loadBookings()">↻ Refresh</button>
+    </div>
+    <div class="tcard" id="c-bookings"><div class="loading"><div class="spin"></div>Loading…</div></div>
+  </div>
+
+  <!-- PASSENGERS -->
+  <div id="pg-passengers" class="page">
+    <div class="sec-head"><h2>Passengers</h2><p>Register new travellers</p></div>
+    <div class="fcard" style="margin-bottom:1.4rem">
+      <form onsubmit="return addPax(event)">
+        <div class="fgrid">
+          <div><label>First Name</label><input id="px-f" required/></div>
+          <div><label>Last Name</label><input id="px-l" required/></div>
+          <div><label>Email</label><input id="px-e" type="email" required/></div>
+          <div><label>Phone</label><input id="px-ph" placeholder="+91-…"/></div>
+          <div class="full"><button class="btn btn-p" type="submit">Add Passenger</button></div>
+        </div>
+      </form>
+    </div>
+    <div class="tcard" id="c-pax"><div class="loading"><div class="spin"></div>Loading…</div></div>
+  </div>
+
+  <!-- FLIGHTS -->
+  <div id="pg-flights" class="page">
+    <div class="sec-head"><h2>All Flights</h2><p>Live schedule & seat availability</p></div>
+    <div class="grid" id="c-flights"><div class="loading"><div class="spin"></div>Loading…</div></div>
+  </div>
+
+  <!-- UNBOOKED -->
+  <div id="pg-unbooked" class="page">
+    <div class="sec-head"><h2>Open Flights</h2><p>Flights with no bookings yet</p></div>
+    <div class="tcard" id="c-unbooked"><div class="loading"><div class="spin"></div>Loading…</div></div>
+  </div>
+
+  <!-- TOP -->
+  <div id="pg-top" class="page">
+    <div class="sec-head"><h2>Most Popular</h2><p>Top 3 booked flights</p></div>
+    <div class="tcard" id="c-top"><div class="loading"><div class="spin"></div>Loading…</div></div>
+  </div>
+
+  <!-- AIRLINES -->
+  <div id="pg-airlines" class="page">
+    <div class="sec-head"><h2>Partner Airlines</h2><p>Flights by airline</p></div>
+    <div class="tcard" id="c-airlines"><div class="loading"><div class="spin"></div>Loading…</div></div>
+  </div>
+</main>
+</div>
+
+<div class="footer">
+  <strong>Cloud Node</strong> &nbsp;·&nbsp; Fly Beyond Limits &nbsp;·&nbsp; © 2026 Flight Booking Portal
+</div>
+
+<script>
+/* ========== API layer (same contract as your backend) ========== */
+const API = '';
+let flights = [], passengers = [];
+
+const planeImgs = [
+  'https://images.unsplash.com/photo-1529074963764-98f45c47344b?w=600&q=80',
+  'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80',
+  'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=600&q=80',
+  'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=600&q=80',
+  'https://images.unsplash.com/photo-1569629743817-70d8db6c323b?w=600&q=80'
+];
+
+function go(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nav').forEach(el => el.classList.remove('on'));
+  document.getElementById('pg-' + n).classList.add('on');
+  const nav = document.querySelector('[data-p="' + n + '"]');
+  if (nav) nav.classList.add('on');
+  if (n === 'book') bookHome();
+  if (n === 'bookings') loadBookings();
+  if (n === 'passengers') loadPax();
+  if (n === 'flights') loadFlights();
+  if (n === 'unbooked') loadUnbooked();
+  if (n === 'top') loadTop();
+  if (n === 'airlines') loadAirlines();
+}
+
+function toast(m, ok = true) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + (ok ? 'ok' : 'err');
+  t.textContent = m;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+async function get(u) {
+  const r = await fetch(API + u);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+async function post(u, d) {
+  const body = Object.entries(d).map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v)).join('&');
+  const r = await fetch(API + u, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body
+  });
+  const j = await r.json();
+  if (!r.ok || j.error) throw new Error(j.error || 'Failed');
+  return j;
+}
+
+function badge(s) {
+  const m = { Confirmed: 'bg', Pending: 'ba', Cancelled: 'br', Completed: 'bb' };
+  return `<span class="badge ${m[s] || 'bb'}">${s}</span>`;
+}
+
+function inr(n) {
+  return '₹' + Math.round(Number(n) || 0).toLocaleString('en-IN');
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ========== Explore pages (API) ========== */
+async function loadFlights() {
+  const el = document.getElementById('c-flights');
+  try {
+    flights = await get('/api/flights');
+    document.getElementById('s-f').textContent = flights.length;
+    el.innerHTML = flights.map((f, i) => {
+      const av = f.available, cls = av === 0 ? 'low' : av < 20 ? 'warn' : 'ok';
+      const img = planeImgs[i % planeImgs.length];
+      return `<div class="fc">
+        <div class="fc-img" style="background-image:linear-gradient(to top,rgba(31,45,36,0.8),transparent 55%),url('${img}')">
+          <div class="fn">${esc(f.flightNumber)}</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-air">${esc(f.airlineName)}</div>
+          <div class="route"><span>${esc(f.departureCity)}</span><span class="arrow">→</span><span>${esc(f.arrivalCity)}</span></div>
+          <div class="meta">
+            <div><div class="k">Departure</div><div class="v" style="font-size:0.82rem">${esc(f.departureTime)}</div></div>
+            <div><div class="k">Seats</div><div class="v ${cls}">${av}/${f.capacity}</div></div>
+            <div><div class="k">Price</div><div class="v">${inr(f.basePrice)}</div></div>
+            <div><div class="k">Booked</div><div class="v">${f.booked}</div></div>
+          </div>
+        </div>
+        <div class="fc-foot">
+          <button class="btn btn-p btn-s btn-block" ${av === 0 ? 'disabled' : ''} onclick="startBookFromFlight(${f.flightId})">${av === 0 ? 'Sold Out' : 'Book Seat'}</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="empty">No flights available</div>';
+  } catch (e) {
+    el.innerHTML = '<div class="error">Could not load flights — is the API running?</div>';
+  }
+}
+
+async function loadPax() {
+  const el = document.getElementById('c-pax');
+  try {
+    passengers = await get('/api/passengers');
+    document.getElementById('s-p').textContent = passengers.length;
+    el.innerHTML = `<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th></tr></thead><tbody>` +
+      passengers.map(p => `<tr>
+        <td>${p.passengerId}</td>
+        <td><strong>${esc(p.firstName)} ${esc(p.lastName)}</strong></td>
+        <td>${esc(p.email)}</td>
+        <td>${esc(p.phone || '–')}</td>
+      </tr>`).join('') + '</tbody></table>';
+  } catch (e) {
+    el.innerHTML = '<div class="error">Failed to load passengers</div>';
+  }
+}
+
+async function loadBookings() {
+  const el = document.getElementById('c-bookings');
+  try {
+    const d = await get('/api/bookings');
+    document.getElementById('s-b').textContent = d.length;
+    if (!d.length) {
+      el.innerHTML = '<div class="empty">No bookings yet</div>';
+      return;
+    }
+    el.innerHTML = `<table><thead><tr>
+      <th>ID</th><th>Passenger</th><th>Flight</th><th>Route</th><th>Seat</th><th>Status</th><th>Amount</th><th></th>
+    </tr></thead><tbody>` + d.map(b => `<tr>
+      <td>${b.bookingId}</td>
+      <td><strong>${esc(b.passengerName)}</strong></td>
+      <td>${esc(b.flightNumber)}</td>
+      <td>${esc(b.route)}</td>
+      <td>${esc(b.seatNumber)}</td>
+      <td>${badge(b.status)}</td>
+      <td>${inr(b.totalAmount)}</td>
+      <td>${b.status !== 'Cancelled' ? `<button class="btn btn-d" onclick="cancel(${b.bookingId})">Cancel</button>` : '–'}</td>
+    </tr>`).join('') + '</tbody></table>';
+  } catch (e) {
+    el.innerHTML = '<div class="error">Failed to load bookings</div>';
+  }
+}
+
+async function loadUnbooked() {
+  const el = document.getElementById('c-unbooked');
+  try {
+    const d = await get('/api/unbooked-flights');
+    document.getElementById('s-u').textContent = d.length;
+    if (!d.length) {
+      el.innerHTML = '<div class="empty">All flights have bookings</div>';
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Flight</th><th>Airline</th><th>From</th><th>To</th><th>Departure</th></tr></thead><tbody>` +
+      d.map(f => `<tr>
+        <td><strong>${esc(f.flightNumber)}</strong></td>
+        <td>${esc(f.airlineName)}</td>
+        <td>${esc(f.departureCity)}</td>
+        <td>${esc(f.arrivalCity)}</td>
+        <td>${esc(f.departureTime)}</td>
+      </tr>`).join('') + '</tbody></table>';
+  } catch (e) {
+    el.innerHTML = '<div class="error">Failed</div>';
+  }
+}
+
+async function loadTop() {
+  const el = document.getElementById('c-top');
+  try {
+    const d = await get('/api/top-flights');
+    const m = ['🥇', '🥈', '🥉'];
+    el.innerHTML = `<table><thead><tr><th>Rank</th><th>Flight</th><th>Airline</th><th>Route</th><th>Bookings</th></tr></thead><tbody>` +
+      d.map((r, i) => `<tr>
+        <td class="medal">${m[i] || (i + 1)}</td>
+        <td><strong>${esc(r.flightNumber)}</strong></td>
+        <td>${esc(r.airlineName)}</td>
+        <td>${esc(r.route)}</td>
+        <td><span class="badge bb">${r.numberOfBookings}</span></td>
+      </tr>`).join('') + '</tbody></table>';
+  } catch (e) {
+    el.innerHTML = '<div class="error">Failed</div>';
+  }
+}
+
+async function loadAirlines() {
+  const el = document.getElementById('c-airlines');
+  try {
+    const d = await get('/api/airline-counts');
+    el.innerHTML = `<table><thead><tr><th>Airline</th><th>IATA</th><th>Flights</th></tr></thead><tbody>` +
+      d.map(r => `<tr>
+        <td><strong>${esc(r.airlineName)}</strong></td>
+        <td><span class="badge bb">${esc(r.iataCode)}</span></td>
+        <td>${r.totalFlights}</td>
+      </tr>`).join('') + '</tbody></table>';
+  } catch (e) {
+    el.innerHTML = '<div class="error">Failed</div>';
+  }
+}
+
+async function cancel(id) {
+  if (!confirm('Cancel booking #' + id + '?')) return;
+  try {
+    await post('/api/cancel', { bookingId: id });
+    toast('Booking cancelled');
+    await refresh();
+  } catch (err) {
+    toast(err.message, false);
+  }
+}
+
+async function addPax(e) {
+  e.preventDefault();
+  try {
+    await post('/api/passengers/add', {
+      firstName: document.getElementById('px-f').value.trim(),
+      lastName: document.getElementById('px-l').value.trim(),
+      email: document.getElementById('px-e').value.trim(),
+      phone: document.getElementById('px-ph').value.trim()
+    });
+    toast('Passenger added');
+    e.target.reset();
+    await loadPax();
+  } catch (err) {
+    toast(err.message, false);
+  }
+  return false;
+}
+
+async function refresh() {
+  await Promise.all([loadFlights(), loadPax(), loadBookings(), loadUnbooked(), loadTop(), loadAirlines()]);
+}
+
+/* ========== Rich booking flow (like Aurelia procedure, Cloud Node theme + live API) ========== */
+const BK = {
+  step: 'home',
+  query: { from: '', to: '', date: '' },
+  results: [],
+  selected: null,
+  passengerId: null,
+  seat: '',
+  takenSeats: [],
+  meal: null,           // index into MEALS or null = none
+  contact: { name: '', email: '', phone: '' },
+  payMethod: 'UPI',
+  flowStep: 0,
+  lastBooking: null,
+  err: ''
+};
+
+const MEALS = [
+  ['Vegetarian thali', 'Veg', 0],
+  ['Chicken biryani', 'Non-veg', 0],
+  ['Paneer wrap', 'Veg', 0],
+  ['Fruit & yoghurt', 'Light', 0]
+];
+
+const STEPS = ['Passenger', 'Seat', 'Meals', 'Contact', 'Confirm'];
+
+function bkRoot() {
+  return document.getElementById('bk-root');
+}
+
+function citiesFromFlights() {
+  const set = new Set();
+  flights.forEach(f => {
+    set.add(f.departureCity);
+    set.add(f.arrivalCity);
+  });
+  return [...set].sort();
+}
+
+function bookHome(prefill) {
+  BK.step = 'home';
+  BK.selected = null;
+  BK.err = '';
+  BK.flowStep = 0;
+  if (prefill) {
+    if (prefill.from) BK.query.from = prefill.from;
+    if (prefill.to) BK.query.to = prefill.to;
+  }
+  const cities = citiesFromFlights();
+  const opts = cities.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  const today = new Date().toISOString().slice(0, 10);
+
+  bkRoot().innerHTML = `
+    <div class="bhero">
+      <h1>Plan your journey</h1>
+      <p>Search live flights from your database — passenger, seat map, contact, and confirm.</p>
+    </div>
+    <form class="search" id="sf">
+      <div class="fd">
+        <label for="bk-from">From</label>
+        <select id="bk-from"><option value="">Any city</option>${opts}</select>
+      </div>
+      <button type="button" class="swap" id="bk-swap" aria-label="Swap cities">⇄</button>
+      <div class="fd">
+        <label for="bk-to">To</label>
+        <select id="bk-to"><option value="">Any city</option>${opts}</select>
+      </div>
+      <div class="fd">
+        <label for="bk-date">Date (optional)</label>
+        <input id="bk-date" type="date" min="${today}" value="${esc(BK.query.date || '')}"/>
+      </div>
+      <div class="r2">
+        <div class="hint" style="align-self:center">Only flights with available seats appear in results.</div>
+        <button type="submit" class="btn-find">Find flights</button>
+      </div>
+      <div class="err" id="bk-er" role="alert"></div>
+    </form>
+    <p class="hint" style="text-align:center;margin-top:1.5rem;color:var(--muted)">Data is loaded from your backend API — booking is saved to MySQL.</p>
+  `;
+
+  document.getElementById('bk-from').value = BK.query.from || '';
+  document.getElementById('bk-to').value = BK.query.to || '';
+
+  document.getElementById('bk-swap').onclick = () => {
+    const a = document.getElementById('bk-from');
+    const b = document.getElementById('bk-to');
+    const t = a.value; a.value = b.value; b.value = t;
+  };
+
+  document.getElementById('sf').onsubmit = e => {
+    e.preventDefault();
+    const from = document.getElementById('bk-from').value;
+    const to = document.getElementById('bk-to').value;
+    const date = document.getElementById('bk-date').value;
+    if (from && to && from === to) {
+      document.getElementById('bk-er').textContent = 'Please choose two different cities.';
+      return;
+    }
+    BK.query = { from, to, date };
+    runSearch();
+  };
+}
+
+function runSearch() {
+  BK.step = 'results';
+  bkRoot().innerHTML = `
+    <div class="bar"><h2>Finding flights…</h2></div>
+    ${'<div class="sk"></div>'.repeat(3)}
+  `;
+
+  setTimeout(() => {
+    let list = flights.filter(f => (f.available || 0) > 0);
+    if (BK.query.from) list = list.filter(f => f.departureCity === BK.query.from);
+    if (BK.query.to) list = list.filter(f => f.arrivalCity === BK.query.to);
+    if (BK.query.date) {
+      // departureTime is formatted like 05-Nov-2026 08:30 — also accept ISO-ish
+      list = list.filter(f => {
+        const t = String(f.departureTime || '');
+        if (t.startsWith(BK.query.date)) return true;
+        // try parse day-mon-year
+        try {
+          const d = new Date(t.replace(/-/g, ' '));
+          if (!isNaN(d) && d.toISOString().slice(0, 10) === BK.query.date) return true;
+        } catch (_) {}
+        return false;
+      });
+    }
+    BK.results = list;
+    renderResults();
+  }, 400);
+}
+
+function renderResults() {
+  const q = BK.query;
+  const title = (q.from || 'Any') + ' → ' + (q.to || 'Any');
+  const cards = BK.results.map((f, i) => {
+    const dep = String(f.departureTime || '');
+    const arr = String(f.arrivalTime || '');
+    const timeDep = dep.length >= 16 ? dep.slice(-5) : dep;
+    const timeArr = arr.length >= 16 ? arr.slice(-5) : arr;
+    return `<article class="cd" style="animation-delay:${Math.min(i, 8) * 40}ms">
+      <div>
+        <b>${esc(f.airlineName)}</b><br>
+        <small style="color:var(--muted)">${esc(f.flightNumber)}</small>
+      </div>
+      <div class="tm">
+        <div><b>${esc(timeDep)}</b><small>${esc(f.departureCity)}</small></div>
+        <div class="m">
+          <hr>
+          <span class="tg">${f.available} seats left</span>
+        </div>
+        <div style="text-align:right"><b>${esc(timeArr)}</b><small>${esc(f.arrivalCity)}</small></div>
+      </div>
+      <div class="by">
+        <b>${inr(f.basePrice)}</b>
+        <small>per seat</small>
+        <button class="btn btn-p btn-s" onclick="pickFlight(${f.flightId})">Select</button>
+      </div>
+    </article>`;
+  }).join('');
+
+  bkRoot().innerHTML = `
+    <div class="bar">
+      <div>
+        <h2>${esc(title)}</h2>
+        <div class="sub">${BK.results.length} flight${BK.results.length === 1 ? '' : 's'} with open seats${q.date ? ' · ' + esc(q.date) : ''}</div>
+      </div>
+      <button class="btn btn-g btn-s" onclick="bookHome()">Change search</button>
+    </div>
+    ${cards || '<div class="em"><h3>No matching flights</h3><p>Try different cities or clear the date filter.</p><button class="btn btn-p" onclick="bookHome()">New search</button></div>'}
+  `;
+}
+
+async function pickFlight(id) {
+  const f = flights.find(x => x.flightId === id);
+  if (!f || !(f.available > 0)) {
+    toast('This flight is no longer available', false);
+    return;
+  }
+  BK.selected = f;
+  BK.passengerId = null;
+  BK.seat = '';
+  BK.meal = null;
+  BK.contact = { name: '', email: '', phone: '' };
+  BK.payMethod = 'UPI';
+  BK.err = '';
+  BK.flowStep = 0;
+  BK.takenSeats = [];
+  try {
+    const seats = await get('/api/seats?flightId=' + id);
+    BK.takenSeats = Array.isArray(seats) ? seats.map(s => String(s).toUpperCase()) : [];
+  } catch (_) {
+    BK.takenSeats = [];
+  }
+  renderFlow();
+}
+
+function startBookFromFlight(id) {
+  go('book');
+  const f = flights.find(x => x.flightId === id);
+  if (f) {
+    BK.query = { from: f.departureCity, to: f.arrivalCity, date: '' };
+    pickFlight(id);
+  }
+}
+
+function prefillSearch(from, to) {
+  go('book');
+  document.querySelector('.shell').scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => bookHome({ from, to }), 50);
+}
+
+function summ() {
+  const f = BK.selected;
+  if (!f) return '';
+  const pax = passengers.find(p => p.passengerId == BK.passengerId);
+  return `<aside class="sm">
+    <h3>Your journey</h3>
+    <div class="sg">
+      <b>${esc(f.departureCity)} → ${esc(f.arrivalCity)}</b><br>
+      ${esc(f.airlineName)} ${esc(f.flightNumber)}<br>
+      ${esc(f.departureTime)}
+      ${pax ? `<br><small>${esc(pax.firstName)} ${esc(pax.lastName)}${BK.seat ? ' · Seat ' + esc(BK.seat) : ''}</small>` : ''}
+      ${BK.meal != null ? `<br><small>Meal: ${esc(MEALS[BK.meal][0])}</small>` : ''}
+      ${BK.payMethod && BK.flowStep >= 3 ? `<br><small>Pay via ${esc(BK.payMethod)}</small>` : ''}
+    </div>
+    <div class="tot"><span>Total</span><span>${inr(f.basePrice)}</span></div>
+  </aside>`;
+}
+
+function renderFlow() {
+  const body = [stepPassenger, stepSeat, stepMeals, stepContact, stepConfirm][BK.flowStep]();
+  bkRoot().innerHTML = `
+    <div class="stp">
+      ${STEPS.map((s, i) => `<div class="${i <= BK.flowStep ? 'on' : ''}"><b>${i < BK.flowStep ? '✓' : i + 1}</b>${s}</div>`).join('')}
+    </div>
+    <div class="fw">
+      <div class="pn">${body}</div>
+      ${summ()}
+    </div>
+  `;
+  bindFlow();
+}
+
+function stepPassenger() {
+  const opts = passengers.map(p =>
+    `<option value="${p.passengerId}" ${BK.passengerId == p.passengerId ? 'selected' : ''}>${esc(p.firstName)} ${esc(p.lastName)} · ${esc(p.email)}</option>`
+  ).join('');
+  return `
+    <h2>Who is flying?</h2>
+    <p class="hint">Select a registered passenger, or add one under Passengers first.</p>
+    <div class="fd full" style="margin-bottom:1rem">
+      <label>Passenger</label>
+      <select id="bk-pax">${opts || '<option value="">No passengers — add one first</option>'}</select>
+    </div>
+    <p class="hint"><a href="#" onclick="go('passengers');return false" style="color:var(--red)">+ Register a new passenger</a></p>
+    ${BK.err ? `<div class="alert">${esc(BK.err)}</div>` : ''}
+    <div class="ac">
+      <button class="btn btn-g" onclick="renderResults()">Back</button>
+      <button class="btn btn-p" id="bk-next">Continue to seat</button>
+    </div>
+  `;
+}
+
+function stepSeat() {
+  // Simple cabin: rows 1–12, seats A B C | D E F ; legroom on 1 and 12
+  const cols = ['A', 'B', 'C', '', 'D', 'E', 'F'];
+  const taken = new Set(BK.takenSeats);
+  let rowsHtml = '';
+  for (let r = 1; r <= 12; r++) {
+    const cells = cols.map(l => {
+      if (!l) return '<i></i>';
+      const n = r + l;
+      const isTaken = taken.has(n);
+      const isMe = BK.seat === n;
+      const leg = (r === 1 || r === 12);
+      let cls = 'se' + (leg ? ' lg' : '') + (isMe ? ' me' : '') + (isTaken ? ' ot' : '');
+      return `<button type="button" class="${cls}" data-s="${n}" ${isTaken ? 'disabled' : ''} aria-label="Seat ${n}">${isMe ? '✓' : l}</button>`;
+    }).join('');
+    rowsHtml += `<div class="sr" style="grid-template-columns:22px repeat(${cols.length},1fr)"><b>${r}</b>${cells}</div>`;
+  }
+  return `
+    <h2>Choose your seat</h2>
+    <p class="hint">Tap an open seat. Gold seats have extra legroom. Taken seats are disabled.</p>
+    <div class="cab">${rowsHtml}</div>
+    <div class="lg2">
+      <span>■ Available</span>
+      <span style="color:#8a6a1f">■ Legroom</span>
+      <span style="color:var(--navy)">■ Yours</span>
+      <span style="color:#9aa89a">■ Taken</span>
+    </div>
+    ${BK.seat ? `<p class="hint" style="text-align:center;margin-top:8px">Selected: <strong>${esc(BK.seat)}</strong></p>` : ''}
+    ${BK.err ? `<div class="alert">${esc(BK.err)}</div>` : ''}
+    <div class="ac">
+      <button class="btn btn-g" id="bk-back">Back</button>
+      <button class="btn btn-p" id="bk-next">Continue to meals</button>
+    </div>
+  `;
+}
+
+function stepMeals() {
+  const cur = BK.meal;
+  const card = (i, n, s, note) =>
+    `<button type="button" class="mc ${cur === i ? 'on' : ''}" data-m="${i}"><small>${s}</small><b>${n}</b><span>${note}</span></button>`;
+  return `
+    <h2>Select your meal</h2>
+    <p class="hint">Complimentary on this flight — choose one or skip.</p>
+    <div class="ml">
+      ${card('', 'No meal, thank you', '', 'Water and a light snack are always served.')}
+      ${MEALS.map((m, i) => card(i, m[0], m[1], 'Complimentary')).join('')}
+    </div>
+    ${BK.err ? `<div class="alert">${esc(BK.err)}</div>` : ''}
+    <div class="ac">
+      <button class="btn btn-g" id="bk-back">Back</button>
+      <button class="btn btn-p" id="bk-next">Continue to contact</button>
+    </div>
+  `;
+}
+
+function stepContact() {
+  const pax = passengers.find(p => p.passengerId == BK.passengerId);
+  if (!BK.contact.name && pax) BK.contact.name = pax.firstName + ' ' + pax.lastName;
+  if (!BK.contact.email && pax) BK.contact.email = pax.email || '';
+  if (!BK.contact.phone && pax) BK.contact.phone = pax.phone || '';
+  const methods = ['UPI', 'Card', 'NetBanking', 'Wallet'];
+  return `
+    <h2>Contact &amp; payment</h2>
+    <p class="hint">Demo payment — no money moves. Details are stored with your booking when extensions are applied.</p>
+    <div class="in">
+      <div class="fd full"><label>Contact name</label><input id="bk-cn" value="${esc(BK.contact.name)}" placeholder="Full name"/></div>
+      <div class="fd"><label>Email</label><input id="bk-ce" type="email" value="${esc(BK.contact.email)}" placeholder="you@email.com"/></div>
+      <div class="fd"><label>Phone</label><input id="bk-cp" type="tel" value="${esc(BK.contact.phone)}" placeholder="+91-…"/></div>
+    </div>
+    <p class="hint" style="margin-top:14px">Payment method</p>
+    <div class="ch" id="bk-pm">
+      ${methods.map(m => `<button type="button" class="chip ${BK.payMethod === m ? 'on' : ''}" data-m="${m}">${m}</button>`).join('')}
+    </div>
+    ${BK.err ? `<div class="alert">${esc(BK.err)}</div>` : ''}
+    <div class="ac">
+      <button class="btn btn-g" id="bk-back">Back</button>
+      <button class="btn btn-p" id="bk-next">Review &amp; confirm</button>
+    </div>
+  `;
+}
+
+function stepConfirm() {
+  const f = BK.selected;
+  const pax = passengers.find(p => p.passengerId == BK.passengerId);
+  return `
+    <h2>Review and confirm</h2>
+    <p class="hint">This creates a booking in your MySQL database.</p>
+    <div class="in">
+      <div class="fd full"><label>Passenger</label><input value="${esc(pax ? pax.firstName + ' ' + pax.lastName : '')}" disabled/></div>
+      <div class="fd"><label>Flight</label><input value="${esc(f.flightNumber)}" disabled/></div>
+      <div class="fd"><label>Seat</label><input value="${esc(BK.seat)}" disabled/></div>
+      <div class="fd full"><label>Route</label><input value="${esc(f.departureCity)} → ${esc(f.arrivalCity)} · ${esc(f.departureTime)}" disabled/></div>
+      <div class="fd"><label>Meal</label><input value="${esc(BK.meal != null ? MEALS[BK.meal][0] : 'None')}" disabled/></div>
+      <div class="fd"><label>Pay via</label><input value="${esc(BK.payMethod)}" disabled/></div>
+      <div class="fd full"><label>Contact</label><input value="${esc(BK.contact.name)}" disabled/></div>
+      <div class="fd full"><label>Amount</label><input value="${inr(f.basePrice)}" disabled/></div>
+    </div>
+    ${BK.err ? `<div class="alert">${esc(BK.err)}</div>` : ''}
+    <div class="ac">
+      <button class="btn btn-g" id="bk-back">Back</button>
+      <button class="btn btn-p" id="bk-pay">Confirm booking ${inr(f.basePrice)}</button>
+    </div>
+  `;
+}
+
+function bindFlow() {
+  const next = document.getElementById('bk-next');
+  const back = document.getElementById('bk-back');
+  const pay = document.getElementById('bk-pay');
+
+  if (BK.flowStep === 0 && next) {
+    next.onclick = () => {
+      const sel = document.getElementById('bk-pax');
+      BK.passengerId = sel ? sel.value : null;
+      if (!BK.passengerId) {
+        BK.err = 'Please select a passenger (or register one under Passengers).';
+        return renderFlow();
+      }
+      BK.err = '';
+      BK.flowStep = 1;
+      renderFlow();
+    };
+  }
+
+  if (BK.flowStep === 1) {
+    document.querySelectorAll('.se[data-s]').forEach(btn => {
+      btn.onclick = () => {
+        const s = btn.getAttribute('data-s');
+        BK.seat = BK.seat === s ? '' : s;
+        BK.err = '';
+        renderFlow();
+      };
+    });
+    if (back) back.onclick = () => { BK.flowStep = 0; BK.err = ''; renderFlow(); };
+    if (next) next.onclick = () => {
+      if (!BK.seat) {
+        BK.err = 'Please select a seat on the map.';
+        return renderFlow();
+      }
+      BK.err = '';
+      BK.flowStep = 2;
+      renderFlow();
+    };
+  }
+
+  if (BK.flowStep === 2) {
+    document.querySelectorAll('.mc[data-m]').forEach(btn => {
+      btn.onclick = () => {
+        const v = btn.getAttribute('data-m');
+        BK.meal = v === '' ? null : +v;
+        BK.err = '';
+        renderFlow();
+      };
+    });
+    if (back) back.onclick = () => { BK.flowStep = 1; BK.err = ''; renderFlow(); };
+    if (next) next.onclick = () => { BK.err = ''; BK.flowStep = 3; renderFlow(); };
+  }
+
+  if (BK.flowStep === 3) {
+    document.querySelectorAll('#bk-pm .chip').forEach(btn => {
+      btn.onclick = () => {
+        BK.payMethod = btn.getAttribute('data-m');
+        renderFlow();
+      };
+    });
+    if (back) back.onclick = () => { BK.flowStep = 2; BK.err = ''; renderFlow(); };
+    if (next) next.onclick = () => {
+      BK.contact.name = (document.getElementById('bk-cn')?.value || '').trim();
+      BK.contact.email = (document.getElementById('bk-ce')?.value || '').trim();
+      BK.contact.phone = (document.getElementById('bk-cp')?.value || '').trim();
+      if (!BK.contact.name || BK.contact.name.length < 2) {
+        BK.err = 'Please enter a contact name.';
+        return renderFlow();
+      }
+      if (BK.contact.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(BK.contact.email)) {
+        BK.err = 'Please enter a valid email.';
+        return renderFlow();
+      }
+      BK.err = '';
+      BK.flowStep = 4;
+      renderFlow();
+    };
+  }
+
+  if (BK.flowStep === 4) {
+    if (back) back.onclick = () => { BK.flowStep = 3; BK.err = ''; renderFlow(); };
+    if (pay) pay.onclick = confirmBooking;
+  }
+}
+
+async function confirmBooking() {
+  const f = BK.selected;
+  if (!f || !BK.passengerId || !BK.seat) return;
+  const btn = document.getElementById('bk-pay');
+  if (btn) { btn.disabled = true; btn.textContent = 'Booking…'; }
+  try {
+    const mealLabel = BK.meal != null ? MEALS[BK.meal][0] : '';
+    const res = await post('/api/book', {
+      passengerId: BK.passengerId,
+      flightId: f.flightId,
+      seatNumber: BK.seat,
+      contactName: BK.contact.name,
+      contactEmail: BK.contact.email,
+      contactPhone: BK.contact.phone,
+      paymentMethod: BK.payMethod,
+      specialRequests: mealLabel ? ('Meal: ' + mealLabel) : ''
+    });
+    const pax = passengers.find(p => p.passengerId == BK.passengerId);
+    BK.lastBooking = {
+      bookingId: res.bookingId || res.id || '—',
+      pnr: res.pnr || ('CN' + String(res.bookingId || Date.now()).slice(-6)),
+      flight: f,
+      passenger: pax,
+      seat: BK.seat,
+      meal: mealLabel,
+      amount: f.basePrice,
+      payMethod: BK.payMethod,
+      contact: { ...BK.contact }
+    };
+    BK.step = 'done';
+    renderDone();
+    toast('Booking confirmed!');
+    await refresh();
+  } catch (err) {
+    BK.err = err.message || 'Booking failed';
+    renderFlow();
+    toast(BK.err, false);
+  }
+}
+
+function renderDone() {
+  const b = BK.lastBooking;
+  const f = b.flight;
+  const p = b.passenger;
+  const dep = String(f.departureTime || '');
+  const arr = String(f.arrivalTime || '');
+
+  bkRoot().innerHTML = `
+    <div class="done">
+      <svg class="tick" viewBox="0 0 84 84"><circle cx="42" cy="42" r="38"/><path d="M26 43l12 12 21-24"/></svg>
+      <h2 style="font-size:36px;color:var(--navy);margin-top:12px">Your journey is confirmed</h2>
+      <p class="sub">Total ${inr(b.amount)}. PNR <b>${esc(b.pnr)}</b> · Booking #${esc(String(b.bookingId))}</p>
+    </div>
+    <div class="ps">
+      <div class="l">
+        <small>${esc(f.airlineName)} · ${esc(f.flightNumber)} · ${esc(dep)}</small>
+        <div class="rt2"><b>${esc(f.departureCity)}</b><hr><b>${esc(f.arrivalCity)}</b></div>
+        <div style="display:flex;justify-content:space-between;color:var(--muted);margin-bottom:8px">
+          <span>${esc(dep)}</span><span>${esc(arr)}</span>
+        </div>
+        <table>
+          <tr><td>${esc(p ? p.firstName + ' ' + p.lastName : 'Passenger')}</td><td>Seat ${esc(b.seat)}</td></tr>
+          <tr><td>${esc(b.contact?.name || '')}</td><td>${esc(b.payMethod || '')}</td></tr>
+          ${b.meal ? `<tr><td>Meal</td><td>${esc(b.meal)}</td></tr>` : ''}
+        </table>
+      </div>
+      <div class="r">
+        <small>PNR</small>
+        <b>${esc(b.pnr)}</b>
+        <small>${esc(b.seat)}</small>
+      </div>
+    </div>
+    <p class="acc">
+      <button class="btn btn-g" onclick="go('bookings')">View my bookings</button>
+      <button class="btn btn-p" onclick="bookHome()">Plan another journey</button>
+    </p>
+  `;
+}
+
+/* ========== Init ========== */
+async function init() {
+  try {
+    await refresh();
+    document.getElementById('status').textContent = 'Live';
+  } catch (e) {
+    document.getElementById('status').textContent = 'Offline';
+    document.querySelector('.dot').style.background = '#c0392b';
+  }
+  bookHome();
+}
+init();
+</script>
+
+<script>
+/* Intro curtains */
+(function () {
+  const intro = document.getElementById('intro');
+  const st = document.getElementById('stars');
+  st.innerHTML = Array.from({ length: 34 }, () =>
+    '<i style="left:' + (Math.random() * 100).toFixed(1) + '%;top:' + (Math.random() * 100).toFixed(1) + '%;animation-delay:' + (Math.random() * 4.5).toFixed(1) + 's"></i>'
+  ).join('');
+  let opened = false;
+  const enter = () => {
+    if (opened) return;
+    opened = true;
+    intro.classList.add('open');
+    setTimeout(() => document.body.classList.add('ready'), 500);
+    setTimeout(() => {
+      intro.classList.add('gone');
+      intro.remove();
+      document.body.classList.remove('intro-lock');
+    }, 1500);
+  };
+  intro.addEventListener('click', enter);
+  document.addEventListener('keydown', enter, { once: true });
+  setTimeout(enter, 7200);
+})();
+</script>
+</body>
+</html>
